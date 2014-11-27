@@ -56,7 +56,7 @@ __global__ void sharedRK4(float *phi, float *phi_new, float *phiK2, float coefIt
   stateK2 = phiK2[tid];
   // Shared
   __shared__ float k1_sh[ blockDim.x ][ blockDim.y ];
-  __syncthreads();
+  //__syncthreads();
   k1_sh[ threadIdx.x ][ threadIdx.y ] = state + coefIter*dt*stateK2;
   __syncthreads();
   
