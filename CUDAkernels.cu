@@ -21,21 +21,21 @@ if (tid_x < blockDim.x*gridDim.x-1 && tid_x > 0 ){
     float idy = 1.0/dy;
     // k1_i+1,j
     int tid_aux = gridDim.x * blockDim.x * tid_y + tid_x + 1;
-    laplax = phiK1[tid_aux]-2.0f*phiK1[tid];
+    laplax = phiK1[tid_aux]-2.0*phiK1[tid];
     // k1_i-1,j
     tid_aux = gridDim.x * blockDim.x * tid_y + tid_x - 1;
     laplax += phiK1[tid_aux];
     laplax *= idx*idx;
     // k1_i,j+1
     tid_aux = gridDim.x * blockDim.x * (tid_y+1) + tid_x;
-    laplay = phiK1[tid_aux]-2.0f*phiK1[tid];
+    laplay = phiK1[tid_aux]-2.0*phiK1[tid];
     // k1_i,j-1
     tid_aux = gridDim.x * blockDim.x * (tid_y-1) + tid_x;
     laplay += phiK1[tid_aux];
     laplay *= idy*idy;
     
     phiK2[tid] = (laplax+laplay)*diffusionC;
-    phi_new[tid] += (laplax+laplay)*coef*dt*(1.0f/6.0f)*diffusionC;
+    phi_new[tid] += (laplax+laplay)*coef*dt*(1.0/6.0)*diffusionC;
     
     
   }
@@ -82,7 +82,7 @@ __global__ void sharedRK4(float *phi, float *phi_new, float *phiK2, float coefIt
 
       lapla *= diffusionC;
       phiK2[tid] = lapla;
-      phi_new[tid] += coef*dt*(1.0f/6.0f)*lapla;
+      phi_new[tid] += coef*dt*(1.0/6.0)*lapla;
     }}
   
   
@@ -113,7 +113,7 @@ __global__ void textureRK4(float *phi, float *phi_new, float diffusionC, float c
   float k1_next = phi_o + coefIter*dt*lapla;
   surf2Dwrite( k1_next , mySurf, tid_x*sizeof(float), tid_y,  cudaBoundaryModeClamp);
   
-  phi_new[tid] += coef*dt*(1.0f/6.0f)*lapla;
+  phi_new[tid] += coef*dt*(1.0/6.0)*lapla;
   
   if (lastStep == 1){
     phi[tid] = phi_new[tid];
