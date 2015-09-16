@@ -6,6 +6,12 @@ Trataremos de presentar una guía básica para utilizar python + CUDA = PyCUDA.
 
 El proyecto esta abierto a todos los interesados. Lo ideal seria generar un colección de herramientas enfocadas al calculo científico.
 
+En esta nueva fase es necesario utilizar los notebooks con 'jupyter' 
+
+Una manera sencilla de instalar es mediante pip
+
+    $sudo pip install jupyter
+
 ##Temas
 
 ##Sesion 1.
