@@ -9,24 +9,29 @@ from pycuda.tools import OccupancyRecord as occupancy
 # length above 46341 and for 3D above 1290 point per dimension, this appears for array size of 17 GBs
 
 def setDevice(ndev = None):
-      ''' To use CUDA or OpenCL you need a context and a device to stablish the context o                   communication '''
-      import pycuda.autoinit
-      nDevices = cuda.Device.count()
-      print "Available Devices:"
-      for i in range(nDevices):
+    ''' To use CUDA or OpenCL you need a context and a device to stablish the context o                   communication '''
+    cuda.init()
+    nDevices = cuda.Device.count()
+    print "Available Devices:"
+    for i in range(nDevices):
             dev = cuda.Device( i )
-            print "  Device {0}: {1}".format( i, dev.name() )
-      devNumber = 0
-      if nDevices > 1:
-            if ndev == None:
-                devNumber = int(raw_input("Select device number: "))
-            else:
-                devNumber = ndev
-      dev = cuda.Device( devNumber)
-      cuda.Context.pop()  #Disable previus CUDA context
-      ctxCUDA = dev.make_context()
-      print "Using device {0}: {1}".format( devNumber, dev.name() )
-      return ctxCUDA, dev
+            try:
+                mem = cuda.mem_get_info()[-i-1]
+            except:
+                mem = 0
+            print "  Device {0}: {1}, Total (MB) {2:.1f}, Free (MB) {3:.1f}".format( i, dev.name(), dev.total_memory()/2.**20, mem/2.**20) #mem/2.**20 )
+    devNumber = 0
+    if nDevices > 1:
+        if ndev == None:
+            devNumber = int(raw_input("Select device number: "))
+        else:
+            devNumber = ndev
+    dev = cuda.Device( devNumber )
+    #cuda.Context.pop()  #Disable previus CUDA context
+    ctxCUDA = dev.make_context()
+    devdata = DeviceData(dev)
+    print "Using device {0}: {1}".format( devNumber, dev.name() )
+    return ctxCUDA, dev, devdata
 
 
 def getKernelInfo(kernel,nthreads, rt=True):
@@ -215,5 +220,4 @@ def getFreeMemory(show=True):
 
     return cuda.mem_get_info()[0]/Mb
 
-ctx,device = setDevice()
-devdata = DeviceData(device)
+#ctx,device,devdata = setDevice()
