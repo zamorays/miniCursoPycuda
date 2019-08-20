@@ -66,9 +66,9 @@ def gpuMesureTime(myKernel, ntimes=1000):
     end.record()
     end.synchronize()
     timeGPU = start.time_till(end)*1e-3
-    print "Call the function {0} times takes in GPU {1} seconds.\n".format(ntimes,timeGPU)
-    print "{0} seconds per call".format(timeGPU/ntimes)
-    return timeGPU
+    print "Call the function {0} times takes in GPU {1} seconds".format(ntimes,timeGPU)
+    print "{0:.2e} seconds per call".format(timeGPU/ntimes)
+    return timeGPU,timeGPU/float(ntimes)
 
 def precisionCU(p = 'float'):
   '''(presicion) p = float,cfloat,double,cdouble'''
